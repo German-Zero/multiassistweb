@@ -2,10 +2,11 @@ import { api } from "../api/axios.instance";
 
 export interface MeResponse {
     id: string;
-    role: 'ADMIN' | 'PRECEPTOR' | 'TEACHER';
+    email: string;
+    role: string;
 }
 
 export async function getUserProfile(): Promise<MeResponse> {
-    const { data } = await api.get('/api/auth/me');
+    const { data } = await api.get('/auth/me');
     return data;
 }

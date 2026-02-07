@@ -1,5 +1,6 @@
 'use client'
 
+import { LogoutButton } from "@/src/modules/auth/components/LogoutButton";
 import { getUserProfile } from "@/src/services/auth/me.services";
 import { useRouter } from "next/navigation"
 import { useEffect } from "react";
@@ -10,16 +11,23 @@ export default function DashboardPage() {
     useEffect(() => {
         async function redirectByRole() {
             const user = await getUserProfile();
+            
+            const role = user.role?.[0];
 
-            switch (user.role) {
+            if (!role) {
+                router.replace('/login')
+                return;
+            }
+
+            switch (role) {
                 case 'ADMIN':
-                    router.replace('dashboard/admin');
+                    router.replace('/dashboard/admin');
                     break;
                 case 'PRECEPTOR':
-                    router.replace('dashboard/preceptor');
+                    router.replace('/dashboard/preceptor');
                     break;
                 case 'TEACHER': 
-                    router.replace('dashboard/teacher');
+                    router.replace('/dashboard/teacher');
                     break;
                 default:
                     router.replace('/login')
@@ -29,5 +37,9 @@ export default function DashboardPage() {
         redirectByRole();
     }, [router]);
 
-    return null;
+    return (
+        <main>
+            <LogoutButton />
+        </main>
+    );
 }
