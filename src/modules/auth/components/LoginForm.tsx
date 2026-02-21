@@ -23,7 +23,7 @@ export function LoginForm() {
         try {
             await login({ email, password });
             authLogin();
-            router.push('/dashboard/admin/admins/create');
+            router.push('/dashboard');
         } catch {
             setError('Credenciales Inválidas');
         } finally {

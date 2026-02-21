@@ -1,11 +1,22 @@
+
 import { api } from "@/src/services/api/axios.instance";
-import { CreateAddressDto, CreateSchoolDto } from "../types";
+import { School } from "../types";
 
-export async function createAddress(dto: CreateAddressDto) {
-    const { data } = await api.post('/addresses', dto);
-    return data;
-}
+export const SchoolService = {
+    getAll: async (): Promise<School[]> => {
+        const { data } = await api.get('/schools');
+        return data;
+    },
 
-export async function createSchool(dto: CreateSchoolDto) {
-    await api.post('/school', dto);
+    create: async (payload: Partial<School>) => {
+        return api.post('/schools', payload);
+    },
+
+    update: async (id: string, payload: Partial<School>) => {
+        return api.put(`schools/${id}`, payload);
+    },
+
+    remove: async (id: string) => {
+        return api.delete(`/schools/${id}`)
+    }
 }

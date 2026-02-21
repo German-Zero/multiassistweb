@@ -1,11 +1,10 @@
-export interface CreateAddressDto {
-    province: string;
-    city: string;
-    street: string;
-    postCode: string;
-}
-
-export interface CreateSchoolDto {
+export interface School {
+    id: string;
     name: string;
-    addressId: number;
+    address: {
+        provincia: string;
+        ciudad: string;
+        calle: string;
+        postCode: string;
+    };
 }
