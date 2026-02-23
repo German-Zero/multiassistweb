@@ -23,4 +23,9 @@ export const UserService = {
     remove: async (id: string) => {
         return api.delete(`/users/${id}`)
     },
+
+    getMe: async (): Promise<User> => {
+        const { data } = await api.get('/auth/me');
+        return data;
+    }
 };
