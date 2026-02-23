@@ -12,7 +12,7 @@ export default function DashboardPage() {
         async function redirectByRole() {
             const user = await getUserProfile();
             
-            const role = user.role?.[0];
+            const role = user.role?.includes('ADMIN') ? 'ADMIN' : user.role?.[1];
 
             if (!role) {
                 router.replace('/login')

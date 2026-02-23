@@ -6,7 +6,6 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET || "What'sFucking
 async function getRoleFromToken(token: string)  { 
     try {
         const { payload } = await jwtVerify(token, secret);
-        console.log(payload);
         return payload.roles as string;
     } catch {
         return null;
@@ -41,7 +40,7 @@ export async function middleware(req: NextRequest) {
 
         if (pathname.startsWith('/dashboard/admin') && !role.includes('ADMIN')) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
-        }
+        } 
 
         if (pathname.startsWith('/dashboard/director') && !role.includes('DIRECTOR')) {
             return NextResponse.redirect(new URL('/dashboard', req.url));

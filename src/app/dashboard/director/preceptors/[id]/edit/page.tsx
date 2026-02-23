@@ -58,7 +58,7 @@ export default function EditPreceptorPage() {
                 className="border p-2 mb-2 w-full"
             >
                 {schools.map(s => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
+                    <option key={s.id} value={s.id} selected={Number(s.id) === user.schoolId}>{s.name}</option>
                 ))}
             </select>
 

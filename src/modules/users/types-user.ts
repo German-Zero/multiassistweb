@@ -9,7 +9,7 @@ export interface User {
     middlename?: string | null;
     lastname: string;
     email: string;
-    userType: 'ADMIN' | 'DIRECTOR' | 'PROFESOR' | 'PRECEPTOR';
+    userType: 'ADMIN' | 'DIRECTOR' | 'PROFESOR' | 'PRECEPTOR' | 'ALUMNO' | 'INSPECTOR';
     dni: string;
     schoolId: number;
 }
