@@ -13,6 +13,7 @@ export default function EditStudentPage() {
 
     const [student, setStudent] = useState<User | null>(null);
     const [schools, setSchools] = useState<School[]>([]);
+    
 
     useEffect(() => {
         UserService.getAll().then(data => {
