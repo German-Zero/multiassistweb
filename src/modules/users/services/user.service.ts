@@ -12,6 +12,11 @@ export const UserService = {
         return data;
     },
 
+    getUnassignedStudents: async (): Promise<User[]> => {
+        const { data } = await api.get('/users/unassigned')
+        return data
+    },
+
     create: async (payload: Partial<User>) => {
         return api.post('/users/user', payload);
     },

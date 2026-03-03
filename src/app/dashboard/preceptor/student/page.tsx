@@ -3,129 +3,63 @@
 import { DivisionService } from "@/src/modules/academic/services/division.service";
 import { Division } from "@/src/modules/academic/type";
 import { StudentService } from "@/src/modules/student/services/student.service";
-import { UserService } from "@/src/modules/users/services/user.service";
-import { User } from "@/src/modules/users/types-user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function StudentPage() {
-    const [student, setStudent] = useState<User[]>([]);
-    const [selectIds, setSelectIds] = useState<number[]>([]);
-    const [divisionId, setDivisionId] = useState<number | null>(null);
-    const [divisions, setDivisions] = useState<Division[]>([]);
-    const [loading, setLoading] = useState(true);
+
+    const [division, setDivisions] = useState<Division[]>([]);
+    const [counts, setCounts] = useState<Record<number, number>>({});
+    const [unassignedCount, setUnassignedCount] = useState(0);
 
     useEffect(() => {
-        UserService.getByRole('ALUMNO')
-            .then(setStudent)
-            .finally(() => setLoading(false));
+        const load = async () => {
+            const divs = await DivisionService.getAll();
+            setDivisions(divs)
 
-        DivisionService.getAll()
-            .then(setDivisions)
+            const divisionCounts: Record<number, number> = {};
+
+            await Promise.all(
+                divs.map(async (d) => {
+                    const students = await StudentService.findByDivision(Number(d.id));
+                    divisionCounts[Number(d.id)] = students.length
+                })
+            );
+
+            const unassigned = await StudentService.getUnassigned();
+            setUnassignedCount(unassigned.length);
+
+            setCounts(divisionCounts)
+        };
+            load();
     }, []);
-
-    const toggleSelection = (id: number) => {
-        setSelectIds(prev =>
-            prev.includes(id)
-              ? prev.filter(sid => sid !== id)
-              : [...prev, id]
-        );
-    };
-
-    const handleAssign = async () => {
-        if (!divisionId || selectIds.length === 0) return;
-
-        await StudentService.assignDivision({
-            userIds: selectIds,
-            divisionId,
-        });
-
-        setSelectIds([]);
-    };
-
-    if (loading) return <p>Cargando...</p>
-
-    if (!student) return <p>No se encontró el estudiante.</p>
-
-    const handleDelete = async (id: string) => {
-        if (!confirm('Eliminar Estudiante?')) return;
-        await UserService.remove(id);
-        setStudent(prev => prev.filter(s => s.id !== id));
-    };
 
     return (
         <section className="p-6">
-            <header className="flex justify-between mb-6">
-                <h1 className="text-xl font-semibold">Estudiante</h1>
+            <h1 className="text-xl mb-6">Divisiones</h1>
+
+            <div className="grid grid-cols-3 gap-4">
+
                 <Link
-                    href="/dashboard/preceptor/student/new"
-                    className="bg-black text-white px-4 py-2 rounded"
+                    href="/dashboard/preceptor/student/unassigned"
+                    className="border p-4 rounded"
                 >
-                    Crear Estudiante
+                    <h2>Sin asignar</h2>
+                    <p>{unassignedCount} alumnos</p>
                 </Link>
-                <div>
-                    <select
-                        onChange={e => setDivisionId(Number(e.target.value))}
-                        className="border p-2"
-                        defaultValue=""
-                    >
-                        <option value="" disabled>
-                            Seleccionar División
-                        </option>
-                        {divisions.map(d => (
-                            <option key={d.id} value={d.id}>
-                                {d.letter} - {d.shift}
-                            </option>
-                        ))}
-                    </select>
 
-                    <button
-                        onClick={handleAssign}
-                        className="bg-green-500 text-white px-4 py-2 rounded ml-2"
+                {division.map(d => (
+                    <Link
+                        key={d.id}
+                        href={`/dashboard/preceptor/student/division/${d.id}`}
+                        className="border p-4 rounded"
                     >
-                        Asignar
-                    </button>
-                </div>
-            </header>
+                        <h2>{d.shift} - {d.letter}</h2>
+                        <p>{counts[Number(d.id)] ?? 0} alumnos</p>
+                    </Link>
+                ))}
 
-            <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr className="bg-gray-100">
-                        <th className="border border-gray-300 px-4 py-2">Nombre</th>
-                        <th className="border border-gray-300 px-4 py-2">Email</th>
-                        <th className="border border-gray-300 px-4 py-2">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {student.map(s => (
-                        <tr key={s.id}>
-                            <td className="border border-gray-300 px-4 py-2">{s.name}</td>
-                            <td className="border border-gray-300 px-4 py-2">{s.email}</td>
-                            <td className="border border-gray-300 px-4 py-2">
-                                <input
-                                    type="checkbox"
-                                    checked={selectIds.includes(Number(s.id))}
-                                    onChange={() =>
-                                        toggleSelection(Number(s.id))
-                                    }
-                                />
-                                <Link
-                                    href={`/dashboard/preceptor/student/${s.id}/edit`}
-                                    className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                >
-                                    Editar
-                                </Link>
-                                <button
-                                    onClick={() => handleDelete(s.id)}
-                                    className="bg-red-500 text-white px-2 py-1 rounded"
-                                >
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            </div>
         </section>
-    );
+    )
 }
