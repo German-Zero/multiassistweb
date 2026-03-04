@@ -91,6 +91,12 @@ export default function DivisionStudents() {
                                     >
                                         Ver Inasistencias
                                     </Link>
+                                    <Link
+                                      href={`/dashboard/preceptor/student/${s.id}/disciplinary`}
+                                      className="bg-yellow-600 text-white px-2 py-1 rounded ml-2"
+                                    >
+                                      Disciplina
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

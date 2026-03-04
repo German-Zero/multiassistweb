@@ -1,5 +1,5 @@
 import { api } from "@/src/services/api/axios.instance";
-import { AttendanceJustify, AttendanceMark, AttendanceOpen } from "../type";
+import { AttendanceJustify, AttendanceMark, AttendanceOpen } from "../attendance.type";
 
 export const AttendanceService = {
     open: async (payload: Partial<AttendanceOpen>) => {

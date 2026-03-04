@@ -1,7 +1,7 @@
 'use client'
 
 import { AttendanceService } from "@/src/modules/attendance/services/attendance.service";
-import { AbsentRecord } from "@/src/modules/attendance/type";
+import { AbsentRecord } from "@/src/modules/attendance/attendance.type";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

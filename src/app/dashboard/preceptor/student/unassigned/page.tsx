@@ -101,7 +101,7 @@ export default function StudentPage() {
                         </option>
                         {divisions.map(d => (
                             <option key={d.id} value={d.id}>
-                                {d.letter} - {d.shift}
+                                {d.academicLevel.name} {d.letter} - {d.shift}
                             </option>
                         ))}
                     </select>
