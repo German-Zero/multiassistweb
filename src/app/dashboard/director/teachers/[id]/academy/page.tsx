@@ -73,7 +73,7 @@ export default function AcademyTeachersPage() {
                 <option value="">Seleccionar División</option>
                 {divisions.map(div => (
                     <option key={div.id} value={div.id}>
-                        {div.letter} - {div.shift}
+                        {div.academicLevel.name} {div.letter} - {div.shift}
                     </option>
                 ))}
             </select>
