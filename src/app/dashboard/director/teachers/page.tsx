@@ -62,6 +62,12 @@ export default function TeachersPage() {
                                 >
                                     Asignar
                                 </Link>
+                                <Link
+                                    href={`/dashboard/director/teachers/${t.id}/academy/reassign`}
+                                    className="bg-green-500 text-white px-2 py-1 rounded ml-2"
+                                >
+                                    Reasignar
+                                </Link>
                                 <button
                                     onClick={() => handleDelete(t.id)}
                                     className="bg-red-500 text-white px-2 py-1 rounded"

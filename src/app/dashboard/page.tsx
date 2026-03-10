@@ -26,8 +26,8 @@ export default function DashboardPage() {
                 case 'PRECEPTOR':
                     router.replace('/dashboard/preceptor');
                     break;
-                case 'TEACHER': 
-                    router.replace('/dashboard/teacher');
+                case 'PROFESOR': 
+                    router.replace('/dashboard/teachers');
                     break;
                 case 'DIRECTOR':
                     router.replace('/dashboard/director');

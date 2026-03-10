@@ -50,11 +50,11 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
         }
 
-        if (pathname.startsWith('/dashboard/student') && !role.includes('STUDENT')) {
+        if (pathname.startsWith('/dashboard/students') && !role.includes('STUDENT')) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
         }
 
-        if (pathname.startsWith('/dashboard/teacher') && !role.includes('TEACHER')) {
+        if (pathname.startsWith('/dashboard/teachers') && !role.includes('PROFESOR')) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
         }
 

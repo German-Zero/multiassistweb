@@ -4,7 +4,7 @@ import { Curriculum } from "../type";
 export const CurriculumService = {
     
     getAll: async (): Promise<Curriculum[]> => {
-        const { data } = await api.get('/academic-levels');
+        const { data } = await api.get('/curriculum');
         return data;
     },
 }

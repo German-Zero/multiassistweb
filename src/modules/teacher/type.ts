@@ -4,3 +4,9 @@ export interface Teacher {
     curriculumId: number;
     divisionId: number;
 }
+
+export interface TeacherAcademy {
+    title: string;
+    userId: number;
+    curriculumIds: number[];
+}
