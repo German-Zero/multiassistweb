@@ -8,7 +8,6 @@ export const GradeService = {
     },  
 
     bulkCreate: async (payload: GradeBulk) => {
-        console.log(payload)
         return api.post("/grade/bulk", payload)
     },
 

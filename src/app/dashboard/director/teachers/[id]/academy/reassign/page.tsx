@@ -35,8 +35,6 @@ export default function ReassignTeacherAcademyPage() {
             const assignedIds = teacherCurriculums.map(
                 (c: Teacher) => c.curriculumId
             );
-            console.log(teacherCurriculums)
-            console.log(assignedIds)
             setSelected(assignedIds);
         };
 

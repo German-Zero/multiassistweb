@@ -16,7 +16,6 @@ export const AttendanceService = {
 
     getAbsents: async (studentId: number) => {
         const { data } = await api.get(`/attendance/absent/${studentId}`)
-        console.log(data)
         return data;
     }
 }

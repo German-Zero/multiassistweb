@@ -11,5 +11,6 @@ export interface User {
     email: string;
     userType: 'ADMIN' | 'DIRECTOR' | 'PROFESOR' | 'PRECEPTOR' | 'ALUMNO' | 'INSPECTOR';
     dni: string;
+    changePassword: boolean;
     schoolId: number;
 }

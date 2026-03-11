@@ -16,7 +16,21 @@ export const StudentService = {
 
     getUnassigned: async (): Promise<Student[]> => {
         const { data } = await api.get('/users/unassigned');
-        console.log(data)
         return data;
+    },
+
+    getMyAttendances: async () => {
+        const { data } = await api.get('/attendance/me')
+        return data
+    },
+
+    getMyWarnings: async () => {
+        const { data } = await api.get('/disciplinary-action/me')
+        return data
+    },
+
+    getMyGrades: async () => {
+        const { data } = await api.get('/grade/me')
+        return data
     }
 };

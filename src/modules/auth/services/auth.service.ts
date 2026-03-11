@@ -8,3 +8,10 @@ export async function login(dto: { email: string; password: string; }): Promise<
     const { data } = await api.post('/auth/login', dto, { withCredentials: true });
     return data;
 }
+
+export const AuthService = {
+    changePassword: async (newPassword: string, id: number) => {
+
+        return api.post(`/auth/change-password/${id}`, { newPassword: newPassword })
+    },
+}

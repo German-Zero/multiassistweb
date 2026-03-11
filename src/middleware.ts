@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
 
     const token = req.cookies.get('access_token')?.value;
     const { pathname } = req.nextUrl;
-    
+
     if (pathname.startsWith('/login') && token) {
         return NextResponse.redirect(new URL('/dashboard', req.url));
     }
@@ -50,7 +50,7 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
         }
 
-        if (pathname.startsWith('/dashboard/students') && !role.includes('STUDENT')) {
+        if (pathname.startsWith('/dashboard/students') && !role.includes('ALUMNO')) {
             return NextResponse.redirect(new URL('/dashboard', req.url));
         }
 

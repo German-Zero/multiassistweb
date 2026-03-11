@@ -32,8 +32,8 @@ export default function DashboardPage() {
                 case 'DIRECTOR':
                     router.replace('/dashboard/director');
                     break;
-                case 'STUDENT':
-                    router.replace('/dashboard/student');
+                case 'ALUMNO':
+                    router.replace('/dashboard/students');
                     break;
                 default:
                     router.replace('/login')

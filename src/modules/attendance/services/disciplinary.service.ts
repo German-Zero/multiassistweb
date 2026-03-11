@@ -8,7 +8,7 @@ export const DisciplinaryService = {
     },
 
     getById: async(id: number) => {
-        const { data } = await api.get(`/disciplinary-action/${id}`)
+        const { data } = await api.get(`/disciplinary-action/by-id/${id}`)
         return data;
     },
 
