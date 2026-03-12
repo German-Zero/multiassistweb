@@ -1,8 +1,9 @@
 'use client'
 
 import { Curriculum } from "@/src/modules/academic/type";
+import { LogoutButton } from "@/src/modules/auth/components/LogoutButton";
 import { GradeService } from "@/src/modules/grades/services/grades.service";
-import { StudentGradeBook } from "@/src/modules/grades/type";
+import { Grade, StudentGradeBook } from "@/src/modules/grades/type";
 import { TeacherService } from "@/src/modules/teacher/service/teacher.service";
 import { UserService } from "@/src/modules/users/services/user.service";
 import { User } from "@/src/modules/users/types-user";
@@ -17,8 +18,10 @@ export default function TeacherDashboard() {
     const [selectedTrimester, setSelectedTrimester] = useState<number | null>(null);
     const [gradeInputs, setGradeInputs] = useState<Record<number, number>>({})
     const [editModalOpen, setEditModalOpen] = useState(false)
+    const [editDescription, setEditDescription] = useState("")
     const [editTrimester, setEditTrimester] = useState<number | null>(null)
     const [editGrades, setEditGrades] = useState<Record<number, number>>({})
+    const [editStudent, setEditStudent] = useState<StudentGradeBook | null>(null)
 
     const setGrade = (studentId: number, value: number) => {
         setGradeInputs(prev => ({
@@ -27,17 +30,26 @@ export default function TeacherDashboard() {
         }))
     }
 
+    const refreshGrades = async () => {
+        if (!selectedCurriculum) return
+
+        const grades = await GradeService.getByCurriculum(selectedCurriculum.curriculumId)
+        setGradeBook(grades)
+    }
+
     const openModal = (trimester: number) => {
         setSelectedTrimester(trimester)
         setGradeModalOpen(true)
     }
 
-    const openEditModal = (trimester: number) => {
+    const openEditModal = (student: StudentGradeBook, trimester: number) => {
+        setEditStudent(student)
         setEditTrimester(trimester)
+
         const initial: Record<number, number> = {}
-        gradeBook.forEach(student => {
-            const grade = student.trimesters[trimester as 1 | 2 | 3].grades[0]
-            if (grade) initial[grade.id] = grade.value
+        
+        student.trimesters[trimester as 1 | 2 | 3].grades.forEach(g => {
+            initial[g.id] = g.value
         })
         setEditGrades(initial)
         setEditModalOpen(true)
@@ -61,8 +73,6 @@ export default function TeacherDashboard() {
     };
 
     const submitEdit = async () => {
-        const description = (document.getElementById('editDescription') as HTMLInputElement).value
-
         const gradesArray = Object.entries(editGrades).map(
             ([gradeId, value]) => ({
                 gradeId: Number(gradeId),
@@ -71,11 +81,13 @@ export default function TeacherDashboard() {
         )
 
         await GradeService.putGrades({
-                description,
+                description: editDescription,
                 grades: gradesArray
             }
         )
         setEditModalOpen(false)
+        await refreshGrades()
+        setGradeInputs({})
     }
 
     const submitGrades = async () => {
@@ -104,8 +116,9 @@ export default function TeacherDashboard() {
             type,
             grades
         })
-
         setGradeModalOpen(false)
+        await refreshGrades()
+        setGradeInputs({})
     }
     if (!user) return <p>Cargando...</p>
 
@@ -114,6 +127,7 @@ export default function TeacherDashboard() {
             <h1 className="text-xl mb-6">
                 Mis Materias
             </h1>
+            <LogoutButton />
             <div className="grid grid-cols-3 gap-4 mb-8">
                 {curriculums.map(c => (
                     <button
@@ -186,7 +200,7 @@ export default function TeacherDashboard() {
                                     <td className="p-2">{student.trimesters[1].grades.map(g => g.value).join(", ") || "-"}</td>
                                     <td className="p-2">
                                         <button
-                                            onClick={() => openEditModal(1)}
+                                            onClick={() => openEditModal(student, 1)}
                                             className="ml-2 text-yellow-600"
                                         >
                                             ✏
@@ -196,7 +210,7 @@ export default function TeacherDashboard() {
                                     <td className="p-2">{student.trimesters[2].grades.map(g => g.value).join(", ") || "-"}</td>
                                     <td className="p-2">
                                         <button
-                                            onClick={() => openEditModal(2)}
+                                            onClick={() => openEditModal(student, 2)}
                                             className="ml-2 text-yellow-600"
                                         >
                                             ✏
@@ -206,7 +220,7 @@ export default function TeacherDashboard() {
                                     <td className="p-2">{student.trimesters[3].grades.map(g => g.value).join(", ") || "-"}</td>
                                     <td className="p-2">
                                         <button
-                                            onClick={() => openEditModal(3)}
+                                            onClick={() => openEditModal(student, 3)}
                                             className="ml-2 text-yellow-600"
                                         >
                                             ✏
@@ -284,56 +298,46 @@ export default function TeacherDashboard() {
                 </div>
             )}
 
-            {editModalOpen && editTrimester && (
+            {editModalOpen && editStudent && editTrimester && (
+
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
                     <div className="bg-gray-600 p-6 rounded w-[600px]">
-                        <h2 className="text-lg mb-4">
-                            Editar Notas - Trimestre {editTrimester}
-                        </h2>
+                        <h2 className="text-lg mb-4"> {editStudent.studentName} - Trimestre {editTrimester} </h2>
 
-                        <input
-                            id="editDescription"
-                            placeholder="Descripcion corregida"
-                            className="border p-2 w-full mb-4"
-                        />
-
-                        <div className="max-h-64 overflow-y-auto border">
-                            {gradeBook.map(student => {
-                                const grade = student.trimesters[editTrimester as 1 | 2 | 3].grades[0]
-                                if (!grade) return null
-
-                                return (
-                                    <div 
-                                        key={grade.id}
-                                        className="flex justify-between p-2 border-b"
-                                    >
-                                        <span>{student.studentName}</span>
-
-                                        <input
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            defaultValue={grade.value}
-                                            className="border w-20 p-1"
-                                            onChange={(e) => 
-                                                setEditGrades(prev => ({
-                                                    ...prev,
-                                                    [grade.id]: Number(e.target.value)
-                                                }))
-                                            }
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-
-                        <div className="flex gap-2 mt-4">
-                            <button
+                        {editStudent.trimesters[editTrimester as 1 | 2 | 3].grades.map((grade: Grade, index: number) => (
+                            <div
+                            key={grade.id}
+                            className="flex justify-between p-2 border-b"
+                            >
+                                <span>Examen N°{index + 1}</span>
+                        
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={10}
+                                    defaultValue={grade.value}
+                                    className="border w-20 p-1"
+                                    onChange={(e) =>
+                                        setEditGrades(prev => ({
+                                            ...prev,
+                                            [grade.id]: Number(e.target.value)
+                                        }))
+                                    }
+                                    />
+                            </div>
+                        ))}
+                        <div className="flex gap-2 mt-4"> 
+                            <button 
+                                className="bg-gray-400 text-white px-4 py-2 rounded" 
+                                onClick={() => setEditModalOpen(false)} 
+                            >Cancelar 
+                            </button>
+                            <button     
                                 className="bg-gray-400 text-white px-4 py-2 rounded"
-                                onClick={submitEdit}
+                                onClick={submitEdit} 
                             >
                                 Guardar Cambios
-                            </button>
+                            </button> 
                         </div>
                     </div>
                 </div>

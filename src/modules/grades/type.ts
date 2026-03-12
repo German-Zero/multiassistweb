@@ -1,5 +1,6 @@
 export type Grade = {
     id: number
+    description: string
     value: number
 }
 
@@ -12,9 +13,9 @@ export type StudentGradeBook = {
     studentId: number
     studentName: string
     trimesters: {
-        "1": TrimesterData
-        "2": TrimesterData
-        "3": TrimesterData
+        1: TrimesterData
+        2: TrimesterData
+        3: TrimesterData
     }
     recoveryExam: number | null
     finalGrade: number | null
