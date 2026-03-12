@@ -1,5 +1,6 @@
 'use client'
 
+import { LogoutButton } from "@/src/modules/auth/components/LogoutButton";
 import { StudentService } from "@/src/modules/student/services/student.service";
 import { StudentAttendance, StudentGrade, StudentWarning } from "@/src/modules/student/type";
 import Link from "next/link";
@@ -24,6 +25,7 @@ export default function StudentsPage() {
 
     return (
         <div className="p-6">
+            <LogoutButton />
             <h1 className="text-xl mb-6">Dashboard</h1>
             <div className="grid grid-cols-3 gap-4">
                 <Link 
@@ -38,12 +40,15 @@ export default function StudentsPage() {
                     className="border p-4 rounded"
                 >
                     <h2 className="font-semibold">Faltas</h2>
-                    <p>{absents.length}</p>
-                </Link>
-                <div className="border p-4 rounded">
-                    <h2 className="font-semibold">Amonestaciones</h2>
                     <p>{attendances.length}</p>
-                </div>
+                </Link>
+                <Link 
+                    href={'/dashboard/students/warnings'}
+                    className="border p-4 rounded"
+                >
+                    <h2 className="font-semibold">Amonestaciones</h2>
+                    <p>{warnings.length}</p>
+                </Link>
             </div>
         </div>
     );
