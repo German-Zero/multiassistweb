@@ -54,7 +54,7 @@ export default function StudentPage() {
                         href={`/dashboard/preceptor/student/division/${d.id}`}
                         className="border p-4 rounded"
                     >
-                        <h2>{d.shift} - {d.letter}</h2>
+                        <h2>{d.shift} - {d.academicLevel.name}{d.letter}</h2>
                         <p>{counts[Number(d.id)] ?? 0} alumnos</p>
                     </Link>
                 ))}

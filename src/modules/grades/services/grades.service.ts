@@ -2,8 +2,9 @@ import { api } from "@/src/services/api/axios.instance"
 import { GradeBulk, PutGrade } from "../type"
 
 export const GradeService = {
-    getByCurriculum: async (id: number) => {
-        const { data } = await api.get(`/grade/curriculum/${id}`)
+    getByCurriculum: async (curriculumId: number) => {
+        const { data } = await api.get(`/students/curriculum/${curriculumId}`)
+        console.log(data)
         return data
     },  
 
