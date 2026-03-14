@@ -1,74 +1,176 @@
 'use client'
 
+import { DirectorCard } from "@/src/components/cards/DirectorCard";
+import { DirectorForm } from "@/src/components/forms/DirectorForm";
+import { ConfirmDialog } from "@/src/components/ui/ConfirmDialog";
+import { Modal } from "@/src/components/ui/Modal";
+import { SchoolService } from "@/src/modules/school/services/school.service";
+import { School } from "@/src/modules/school/types";
 import { UserService } from "@/src/modules/users/services/user.service";
 import { User } from "@/src/modules/users/types-user"
+import { Plus, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react"
 
 export default function DirectorPage() {
     const [directors, setDirectors] = useState<User[]>([]);
+    const [schools, setSchools] = useState<School[]>([])
+    const [directorToDelete, setDirectorToDelete] = useState<string | null>(null)
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false)
+    const [openCreate, setOpenCreate] = useState(false)
+    const [directorEdit, setDirectorEdit] = useState<User | null>(null)
 
 useEffect(() => {
-  UserService.getByRole('DIRECTOR')
-    .then(setDirectors)
+    Promise.all([
+        UserService.getByRole('DIRECTOR'),
+        SchoolService.getAll()
+    ])
+    .then(([directors, schools]) => {
+        setDirectors(directors)
+        setSchools(schools)
+    })
     .finally(() => setLoading(false));
 }, []);
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Eliminar Director?')) return;
-        await UserService.remove(id);
-        setDirectors(prev => prev.filter(d => d.id !== id));
+    const confirmDelete = async () => {
+        if (!directorToDelete) return;
+        await UserService.remove(Number(directorToDelete));
+
+        setDirectors(prev =>
+            prev.filter(d => d.id !== Number(directorToDelete))
+        );
+        setDirectorToDelete(null)
     };
 
     if (loading) return <p>Cargando...</p>
 
     return (
-        <section className="p-6">
-            <header className="flex justify-between mb-6">
-                <h1 className="text-xl font-semibold">Directores</h1>
-                <Link 
-                    href="/dashboard/admin/director/new" 
-                    className="bg-black text-white px-4 py-2 rounded"
-                >
-                    Crear Director
-                </Link>
+        <section className="p-6 space-y-6">
+            <header className="flex items-center justify-between">
+                <h1 className="text-2xl text-black font-semibold dark:text-slate-50">Directores</h1>
+                <div className="flex items-center justify-between gap-4">
+                    <Link
+                        href={"/dashboard/admin"}
+                        className="
+                        px-4 py-2 rounded-lg transition
+                        text-white
+                        bg-indigo-600 hover:bg-indigo-700"
+                        >
+                        <Undo2 />
+                    </Link>
+                    <button
+                        onClick={() => setOpenCreate(true)} 
+                        className="
+                        px-4 py-2 rounded-lg transition
+                        text-white
+                        bg-indigo-600 hover:bg-indigo-700"
+                        >
+                        <Plus />
+                    </button>
+                </div>
             </header>
+            
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {directors.map(d => (
 
-            <table className="w-full border">
-                <thead>
-                    <tr className="bg-gray-100 text-left">
-                        <th className="p-2">Nombre</th>
-                        <th className="p-2">Email</th>
-                        <th className="p-2">Acciones</th>
-                    </tr>
-                </thead>
+                    <DirectorCard
+                    key={d.id}
+                    user={d}
+                    >
+                        <button
+                            onClick={() => setDirectorEdit(d)}
+                            className="
+                            py-2 px-4 rounded transition 
+                            font-medium text-white
+                            bg-amber-500 hover:bg-amber-600"
+                            >
+                            Editar
+                        </button>
+                        <button
+                            onClick={() => setDirectorToDelete(String(d.id))}
+                            className="
+                            py-2 px-4 rounded-md transition 
+                            font-medium text-white
+                            bg-red-600 hover:bg-red-700"
+                            >
+                            Eliminar
+                        </button>
+                    </DirectorCard>
+                ))}
+            </div>
 
-                <tbody>
-                    {directors.map((d) => (
-                        <tr key={d.id} className="border-t">
-                            <td className="p-2">{d.name}</td>
-                            <td className="p-2">{d.email}</td>
-                            <td className="p-2 flex gap-2">
-                                <Link
-                                    href={`/dashboard/admin/director/${d.id}/edit`}
-                                    className="underline"
-                                >
-                                    Editar
-                                </Link>
-                                <button
-                                    onClick={() => handleDelete(d.id)}
-                                    className="text-red-600"
-                                >
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
 
-            </table>
+            <ConfirmDialog 
+                open={!!directorToDelete}
+                title="Eliminar Director"
+                description="El director será eliminado permanentemente."
+                confirmText="Eliminar"
+                cancelText="Cancelar"
+                onConfirm={confirmDelete}
+                onCancel={() => setDirectorToDelete(null)}
+            />
 
+
+            <Modal
+                open={openCreate}
+                title="Nuevo Director"
+                onClose={() => setOpenCreate(false)}
+            >
+                <DirectorForm
+                    loading={saving}
+                    schools={schools}
+                    onSubmit={async (e) => {
+                        e.preventDefault()
+
+                        const form = new FormData(e.currentTarget)
+                        setSaving(true)
+                        const res = await UserService.create({
+                            name: String(form.get('name') ?? ''),
+                            lastname: String(form.get('lastname') ?? ''),
+                            email: String(form.get('email') ?? ''),
+                            dni: String(form.get('dni') ?? ''),
+                            userType: 'DIRECTOR',
+                            schoolId: Number(form.get('schoolId')),
+                        })
+                        setDirectors(prev => [...prev, res])
+                        setOpenCreate(false)
+                        setSaving(false)
+                    }}
+                />
+            </Modal>
+
+
+            <Modal
+                open={!!directorEdit}
+                title="Editar Director"
+                onClose={() => setDirectorEdit(null)}
+            >
+                {directorEdit && (
+                    <DirectorForm 
+                        schools={schools}
+                        defaultValues={directorEdit}
+                        onSubmit={async (e) => {
+                            e.preventDefault()
+
+                            const form = new FormData(e.currentTarget)
+
+                            const res = await UserService.update(directorEdit.id, {
+                                name: String(form.get('name')),
+                                lastname: String(form.get('lastname')),
+                                email: String(form.get('email')),
+                                dni: String(form.get('dni'))
+                            })
+
+                            setDirectors(prev =>
+                                prev.map(d => d.id === res.id ? res : d)
+                            )
+
+                            setDirectorEdit(null)
+                        }}
+                    />
+                )}
+            </Modal>
         </section>
     );
 }

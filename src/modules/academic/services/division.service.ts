@@ -7,4 +7,9 @@ export const DivisionService = {
         const { data } = await api.get('/divisions');
         return data;
     },
+
+    getDivisionsWithStudents: async () => {
+        const { data } = await api.get(`/divisions/with-students`);
+        return data;
+    },
 }

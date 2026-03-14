@@ -1,158 +1,156 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 'use client';
 
+import { AssignDivisionPanel } from "@/src/components/students/AssignDivisionPanel";
+import { CreateStudentModal } from "@/src/components/students/CreateStudentModal";
+import { EditStudentModal } from "@/src/components/students/EditStudentModal";
+import { EmptyStudents } from "@/src/components/students/EmptyStudents";
+import { StudentsHeader } from "@/src/components/students/StudentsHeader";
+import { UnassignedStudentsTable } from "@/src/components/students/UnassignedStudentsTable";
+import { ConfirmDialog } from "@/src/components/ui/ConfirmDialog";
 import { DivisionService } from "@/src/modules/academic/services/division.service";
 import { Division } from "@/src/modules/academic/type";
+import { SchoolService } from "@/src/modules/school/services/school.service";
+import { School } from "@/src/modules/school/types";
 import { StudentService } from "@/src/modules/student/services/student.service";
 import { UserService } from "@/src/modules/users/services/user.service";
 import { User } from "@/src/modules/users/types-user";
+import { Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function StudentPage() {
-    const [student, setStudent] = useState<User[]>([]);
+export default function UnassignedPage() {
+    const [students, setStudents] = useState<User[]>([]);
     const [selectIds, setSelectIds] = useState<number[]>([]);
     const [divisionId, setDivisionId] = useState<number | null>(null);
     const [divisions, setDivisions] = useState<Division[]>([]);
+    const [schools, setSchools] = useState<School[]>([])
+    const [studentToDelete, setStudentToDelete] = useState<number | null>(null)
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false)
+    const [openCreate, setOpenCreate] = useState(false)
+    const [studentEdit, setStudentEdit] = useState<User | null>(null)
 
     useEffect(() => {
-        const load = async () => {
-            const students = await UserService.getUnassignedStudents();
-            setStudent(students);
-        
-            const divs = await DivisionService.getAll();
-            setDivisions(divs);
-        
-            setLoading(false);
-        };
-    
-        load();
+            Promise.all([
+                UserService.getUnassignedStudents(),
+                DivisionService.getAll(),
+                SchoolService.getAll(),
+            ])
+            .then(([students, divisions, schools]) => {
+                setStudents(students)
+                setDivisions(divisions)
+                setSchools(schools)
+            })
+            .finally(() => setLoading(false))
     }, []);
 
     const toggleSelection = (id: number) => {
         setSelectIds(prev =>
             prev.includes(id)
-              ? prev.filter(sid => sid !== id)
-              : [...prev, id]
+                ? prev.filter(sid => sid !== id)
+                : [...prev, id]
         );
+    };
+
+        const confirmDelete = async () => {
+        if (!studentToDelete) return;
+        await UserService.remove(studentToDelete);
+
+        setStudents(prev =>
+            prev.filter(s => s.id !== studentToDelete)
+        );
+        setStudentToDelete(null)
     };
 
     const handleAssign = async () => {
         if (!divisionId || selectIds.length === 0) return;
-
         await StudentService.assignDivision({
             userIds: selectIds,
             divisionId,
         });
 
-        setStudent(prev =>
-            prev.filter(s => !selectIds.includes(Number(s.id)))
+        setStudents(prev =>
+            prev.filter(s => !selectIds.includes(s.id))
         );
-
         setSelectIds([]);
     };
 
     if (loading) return <p>Cargando...</p>
 
-        {student.length === 0 ? (
-        <div className="border border-dashed border-gray-400 p-10 text-center rounded">
-            <p className="mb-4 text-gray-600">
-                No hay estudiantes sin asignar.
-            </p>
-        
-            <Link
-                href="/dashboard/preceptor/student/new"
-                className="bg-green-600 text-white px-6 py-2 rounded"
-            >
-                Crear primer estudiante
-            </Link>
-        </div>
-    ) : (
-        <table className="w-full border-collapse border border-gray-300">
-            ...
-        </table>
-    )}
+    return (            
+        <section className="space-y-6 p-6">
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Eliminar Estudiante?')) return;
-        await UserService.remove(id);
-        setStudent(prev => prev.filter(s => s.id !== id));
-    };
-
-    return (
-        <section className="p-6">
-            <header className="flex justify-between mb-6">
-                <h1 className="text-xl font-semibold">Estudiante</h1>
+            <div className="flex items-center justify-end">
                 <Link
-                    href="/dashboard/preceptor/student/new"
-                    className="bg-black text-white px-4 py-2 rounded"
-                >
-                    Crear Estudiante
+                    href="/dashboard/preceptor"
+                    className="
+                    px-4 py-2 rounded-lg transition
+                    text-white
+                    bg-indigo-600 hover:bg-indigo-700"
+                    >
+                    <Undo2 />
                 </Link>
-                <div>
-                    <select
-                        onChange={e => setDivisionId(Number(e.target.value))}
-                        className="border p-2"
-                        defaultValue=""
-                    >
-                        <option value="" disabled>
-                            Seleccionar División
-                        </option>
-                        {divisions.map(d => (
-                            <option key={d.id} value={d.id}>
-                                {d.academicLevel.name} {d.letter} - {d.shift}
-                            </option>
-                        ))}
-                    </select>
+            </div>
 
-                    <button
-                        onClick={handleAssign}
-                        className="bg-green-500 text-white px-4 py-2 rounded ml-2"
-                    >
-                        Asignar
-                    </button>
-                </div>
-            </header>
+            {students.length === 0 ? (
+                <EmptyStudents onCreate={() => setOpenCreate(true)} />
+            ) : (
+                <>
 
-            <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr className="bg-gray-100">
-                        <th className="border border-gray-300 px-4 py-2">Nombre</th>
-                        <th className="border border-gray-300 px-4 py-2">Email</th>
-                        <th className="border border-gray-300 px-4 py-2">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {student.map(s => (
-                        <tr key={s.id}>
-                            <td className="border border-gray-300 px-4 py-2">{s.name}</td>
-                            <td className="border border-gray-300 px-4 py-2">{s.email}</td>
-                            <td className="border border-gray-300 px-4 py-2">
-                                <input
-                                    type="checkbox"
-                                    checked={selectIds.includes(Number(s.id))}
-                                    onChange={() =>
-                                        toggleSelection(Number(s.id))
-                                    }
-                                />
-                                <Link
-                                    href={`/dashboard/preceptor/student/${s.id}/edit`}
-                                    className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                >
-                                    Editar
-                                </Link>
-                                <button
-                                    onClick={() => handleDelete(s.id)}
-                                    className="bg-red-500 text-white px-2 py-1 rounded"
-                                >
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <StudentsHeader 
+                total={students.length}
+                onCreate={() => setOpenCreate(true)}
+                />
+
+            <AssignDivisionPanel 
+                divisions={divisions}
+                selected={selectIds}
+                onAssign={handleAssign}
+                onDivisionChange={setDivisionId}
+                />
+
+            <UnassignedStudentsTable 
+                students={students}
+                selected={selectIds}
+                toggle={toggleSelection}
+                onEdit={setStudentEdit}
+                onDelete={setStudentToDelete}
+                />
+
+            <ConfirmDialog 
+                open={!!studentToDelete}
+                title="Eliminar Alumno"
+                description="El Alumno será eliminado permanentemente."
+                confirmText="Eliminar"
+                cancelText="Cancelar"
+                onConfirm={confirmDelete}
+                onCancel={() => setStudentToDelete(null)}
+                />
+            </>
+            )}
+
+            <CreateStudentModal 
+                open={openCreate}
+                schools={schools}
+                saving={saving}
+                setSaving={setSaving}
+                onClose={() => setOpenCreate(false)}
+                onCreated={(students) =>
+                    setStudents(prev => [...prev, students])
+                }
+                />
+
+            <EditStudentModal 
+                student={studentEdit}
+                schools={schools}
+                onClose={() => setStudentEdit(null)}
+                onUpdated={(updated) =>
+                    setStudents(prev => 
+                        prev.map(s => s.id === updated.id ? updated : s)
+                    )
+                }
+                />
+
         </section>
     );
 }

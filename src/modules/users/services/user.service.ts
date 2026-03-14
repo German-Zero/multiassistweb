@@ -12,20 +12,27 @@ export const UserService = {
         return data;
     },
 
+    getById: async (id: number): Promise<User> => {
+        const { data } = await api.get(`/users/${id}`)
+        return data;
+    },
+
     getUnassignedStudents: async (): Promise<User[]> => {
         const { data } = await api.get('/users/unassigned')
         return data
     },
 
     create: async (payload: Partial<User>) => {
-        return api.post('/users/user', payload);
+        const res = await api.post('/users/user', payload);
+        return res.data
     },
 
-    update: async (id: string, payload: Partial<User>) => {
-        return api.put(`/users/${id}`, payload);
+    update: async (id: number, payload: Partial<User>) => {
+        const res = await api.put(`/users/${id}`, payload);
+        return res.data
     },
 
-    remove: async (id: string) => {
+    remove: async (id: number) => {
         return api.delete(`/users/${id}`)
     },
 

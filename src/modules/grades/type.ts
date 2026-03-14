@@ -4,6 +4,12 @@ export type Grade = {
     value: number
 }
 
+export type EditTableGrade = {
+    gradeId: number
+    description: string
+    value: number
+}
+
 export type TrimesterData = {
     grades: Grade[]
     average: number | null
@@ -34,7 +40,6 @@ export type GradeBulk = {
 }
 
 export type PutGrade = {
-    description: string;
     grades: {
         gradeId: number
         value: number

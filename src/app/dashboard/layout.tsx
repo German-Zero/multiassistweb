@@ -14,6 +14,7 @@ export default function DashboardLayout({
     useEffect(() => {
         const check = async () => {
             const user = await UserService.getMe()
+
             if (!user.changePassword){
                 router.push("/change-password")
             }
@@ -21,11 +22,10 @@ export default function DashboardLayout({
         check()
     }, [])
     return (
-        <div className="min-h-screen flex bg-neutral-950 text-white">
-            <aside className="w-64 bg-neutral-900 p-4">
-                <h2 className="font-semibold">Admin Panel</h2>
-            </aside>
-            <main className="flex-1 p-8">{children}</main>
+        <div className="min-h-screen flex bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+            <main className="flex-1 min-w-0 p-8">
+                {children}
+            </main>
         </div>
     )
 }

@@ -17,10 +17,9 @@ export interface Curriculum {
 }
 
 export interface Division {
-    id: string;
+    id: number;
     letter: string;
     shift: 'MAÑANA' | 'TARDE' | 'NOCHE';
-    academicLevel: {
-        name: string;
-    }
+    academicLevel: string;
+    studentCount: number
 }

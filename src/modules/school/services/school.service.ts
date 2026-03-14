@@ -9,11 +9,13 @@ export const SchoolService = {
     },
 
     create: async (payload: Partial<School>) => {
-        return api.post('/schools', payload);
+        const res = await api.post('/schools', payload);
+        return res.data
     },
 
     update: async (id: string, payload: Partial<School>) => {
-        return api.put(`schools/${id}`, payload);
+        const res = await api.put(`schools/${id}`, payload);
+        return res.data
     },
 
     remove: async (id: string) => {

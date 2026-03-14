@@ -4,9 +4,8 @@ export interface Role {
 }
 
 export interface User {
-    id: string;
+    id: number;
     name: string;
-    middlename?: string | null;
     lastname: string;
     email: string;
     userType: 'ADMIN' | 'DIRECTOR' | 'PROFESOR' | 'PRECEPTOR' | 'ALUMNO' | 'INSPECTOR';
