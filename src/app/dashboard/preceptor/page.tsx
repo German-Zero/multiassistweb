@@ -2,14 +2,14 @@
 
 import { DivisionCard } from "@/src/components/cards/DivisionCard";
 import { DivisionService } from "@/src/modules/academic/services/division.service";
-import { Division } from "@/src/modules/academic/type";
+import { DivisionWithStudent } from "@/src/modules/academic/type";
 import { LogoutButton } from "@/src/modules/auth/components/LogoutButton"
 import { StudentService } from "@/src/modules/student/services/student.service";
 import { useEffect, useState } from "react";
 
 export default function DashboardPreceptor() {
 
-    const [divisions, setDivisions] = useState<Division[]>([]);
+    const [divisions, setDivisions] = useState<DivisionWithStudent[]>([]);
     const [unassignedCount, setUnassignedCount] = useState(0);
     const [loading, setLoading] = useState(true)
 
