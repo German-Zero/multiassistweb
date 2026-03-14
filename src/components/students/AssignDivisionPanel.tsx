@@ -1,13 +1,11 @@
-type AcademicLevel = {
-    id: number
-    name: string
-}
-
 type DivisionComplete = {
     id: number
     letter: string
     shift: string
-    academicLevel: AcademicLevel
+    academicLevel: {
+        id: number
+        name: string
+    }
 }
 
 
