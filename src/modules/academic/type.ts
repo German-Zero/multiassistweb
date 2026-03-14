@@ -16,6 +16,14 @@ export interface Curriculum {
     }
 }
 
+export interface DivisionWithStudent {
+    id: number
+    letter: string
+    shift: 'MAÑANA' | 'TARDE' | 'NOCHE'
+    academicLevel: string
+    studentCount: number
+}
+
 export interface Division {
     id: number;
     letter: string;
@@ -23,5 +31,4 @@ export interface Division {
     academicLevel: {
         name: string
     }
-    studentCount: number
 }
