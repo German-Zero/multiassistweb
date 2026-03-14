@@ -50,7 +50,7 @@ export default function DashboardPreceptor() {
                 {divisions?.map(d => (
                     <DivisionCard 
                         key={d.id}
-                        title={`${d.academicLevel}${d.letter} - ${d.shift}`}
+                        title={`${d.academicLevel.name}${d.letter} - ${d.shift}`}
                         count={d.studentCount}
                         href={`/dashboard/preceptor/student/division/${d.id}`}
                     />
