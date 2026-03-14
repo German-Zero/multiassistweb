@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL
+        destination: 'https://multiassistapi.fly.dev/api/:path*'
       }
     ]
   }
