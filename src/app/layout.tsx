@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   themeColor: "#1e40af",
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/icon-192.png"
+    icon: "/School.png",
+    shortcut: "/School.png",
+    apple: "/School.png"
   }
 };
 
