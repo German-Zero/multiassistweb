@@ -1,8 +1,18 @@
-import { Division } from "@/src/modules/academic/type"
+type AcademicLevel = {
+    id: number
+    name: string
+}
+
+type DivisionComplete = {
+    id: number
+    letter: string
+    shift: string
+    academicLevel: AcademicLevel
+}
 
 
 type Props = {
-    divisions: Division[]
+    divisions: DivisionComplete[]
     selected: number[]
     onAssign: () => void
     onDivisionChange: (id: number) => void
@@ -40,7 +50,7 @@ export function AssignDivisionPanel({
             
             {divisions.map(d => (
                 <option key={d.id} value={d.id}>
-                    {d.letter} - {d.shift}
+                    {d.academicLevel.name}{d.letter} - {d.shift}
                 </option>
             ))}
             </select>
