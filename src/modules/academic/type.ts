@@ -20,6 +20,9 @@ export interface Division {
     id: number;
     letter: string;
     shift: 'MAÑANA' | 'TARDE' | 'NOCHE';
-    academicLevel: string;
+    academicLevel: {
+        id: number
+        name: string
+    }
     studentCount: number
 }
