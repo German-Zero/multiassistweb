@@ -40,7 +40,7 @@ export function AssignDivisionPanel({
             
             {divisions.map(d => (
                 <option key={d.id} value={d.id}>
-                    {d.academicLevel.name}{d.letter} - {d.shift}
+                    {d.letter} - {d.shift}
                 </option>
             ))}
             </select>
