@@ -1,16 +1,7 @@
-type DivisionComplete = {
-    id: number
-    letter: string
-    shift: string
-    academicLevel: {
-        id: number
-        name: string
-    }
-}
-
+import { Division } from "@/src/modules/academic/type"
 
 type Props = {
-    divisions: DivisionComplete[]
+    divisions: Division[]
     selected: number[]
     onAssign: () => void
     onDivisionChange: (id: number) => void
