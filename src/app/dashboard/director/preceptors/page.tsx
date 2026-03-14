@@ -126,6 +126,7 @@ export default function PreceptorPage() {
                         setSaving(true)
                         const res = await UserService.create({
                             name: String(form.get('name')),
+                            lastname: String(form.get('lastname')),
                             email: String(form.get('email')),
                             dni: String(form.get('dni')),
                             userType: 'PRECEPTOR',
