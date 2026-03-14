@@ -10,7 +10,6 @@ export function AdminRegisterForm() {
     const [form, setForm] = useState({
         email: '',
         name: '',
-        middlename: '',
         lastname: '',
         password: '',
         dni: 0,
@@ -33,7 +32,6 @@ export function AdminRegisterForm() {
             setForm({
                 email: '',
                 name: '',
-                middlename: '',
                 lastname: '',
                 password: '',
                 dni: 0,
@@ -67,14 +65,6 @@ export function AdminRegisterForm() {
                 onChange={handleChange}
                 value={form.name}
                 required
-            />
-
-            <input 
-                name="middlename"
-                placeholder="Segundo Nombre"
-                className="w-full p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                onChange={handleChange}
-                value={form.middlename}
             />
 
             <input 

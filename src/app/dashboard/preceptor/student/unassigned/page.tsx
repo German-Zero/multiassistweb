@@ -75,7 +75,15 @@ export default function UnassignedPage() {
         setSelectIds([]);
     };
 
-    if (loading) return <p>Cargando...</p>
+    if (loading) {
+        return (
+            <section className="p-6">
+                <p className="text-sm text-slate-500">
+                    Cargando estudiantes...
+                </p>
+            </section>
+        )
+    }
 
     return (            
         <section className="space-y-6 p-6">

@@ -33,66 +33,92 @@ export default function SchoolPage() {
         );
         setSchoolToDelete(null)
     };
-
-    if (loading) return <p>Cargando...</p>
+    if (loading) {
+        return (
+            <section className="min-h-screen flex items-center justify-center">
+                <p className="text-slate-500 dark:text-slate-400 animate-pulse">
+                    Cargando escuelas...
+                </p>
+            </section>
+        )
+    }
 
     return (
-        <section className="p-6 space-y-6">
-            <header className="flex items-center justify-between">
-                <h1 className="text-2xl text-black font-semibold dark:text-slate-50">Escuelas</h1>
-                <div className="flex items-center justify-between gap-4">
+        <section className="
+            min-h-screen p-4 sm:p-6 lg:p-10 space-y-6
+            bg-slate-50 dark:bg-slate-950
+        ">
+            <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h1 className="
+                    text-2xl font-semibold
+                    text-slate-800 dark:text-slate-100
+                ">
+                    Escuelas
+                </h1>
+                <div className="flex gap-3">
                     <Link
                         href="/dashboard/admin"
                         className="
-                        px-4 py-2 rounded-lg transition
-                        text-white bg-indigo-600 hover:bg-indigo-700
-                    ">
-                        <Undo2 />
+                            flex items-center justify-center px-4 py-2 rounded-lg
+                            text-white bg-slate-600 hover:bg-slate-700
+                            transition
+                        "
+                    >
+                        <Undo2 size={18}/>
                     </Link>
                     <button
                         onClick={() => setOpenCreate(true)}
                         className="
-                        px-4 py-2 rounded-lg transition
-                        text-white 
-                        bg-indigo-600 hover:bg-indigo-700
-                    ">
-                        <Plus />
+                            flex items-center gap-2 px-4 py-2 rounded-lg
+                            text-white bg-indigo-600 hover:bg-indigo-700
+                            transition
+                        "
+                    >
+                        <Plus size={18}/>
+                        <span className="hidden sm:inline">
+                            Nueva
+                        </span>
                     </button>
                 </div>
             </header>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="
+                grid gap-4 grid-cols-1
+                sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+            ">
                 {schools.map(s => (
                     <SchoolCard
                         key={s.id}
                         school={s}
                     >
-                        <button
-                            onClick={() => setSchoolEdit(s)}
-                            className="
-                            py-2 px-4 rounded transition 
-                            font-medium text-white
-                            disabled:opacity-50 disabled:cursor-not-allowed 
-                            bg-amber-500 hover:bg-amber-600"
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setSchoolEdit(s)}
+                                className="
+                                    flex-1 py-2 px-3 rounded-md text-sm font-medium
+                                    text-white bg-amber-500 hover:bg-amber-600
+                                    transition
+                                "
                             >
-                            Editar
-                        </button>
-                        <button
-                            onClick={() => setSchoolToDelete(String(s.id))}
-                            className="
-                            py-2 px-4 rounded-md transition 
-                            font-medium text-white
-                            bg-red-600 hover:bg-red-700"
+                                Editar
+                            </button>
+                            <button
+                                onClick={() => setSchoolToDelete(String(s.id))}
+                                className="
+                                    flex-1 py-2 px-3 rounded-md text-sm font-medium
+                                    text-white bg-red-600 hover:bg-red-700
+                                    transition
+                                "
                             >
-                            Eliminar
-                        </button>
+                                Eliminar
+                            </button>
+                        </div>
                     </SchoolCard>
                 ))}
             </div>
 
-
-            <ConfirmDialog 
+            <ConfirmDialog
                 open={!!schoolToDelete}
-                title="Eliminar Escuela"
+                title="Eliminar escuela"
                 description="La escuela será eliminada permanentemente."
                 confirmText="Eliminar"
                 cancelText="Cancelar"
@@ -100,16 +126,16 @@ export default function SchoolPage() {
                 onCancel={() => setSchoolToDelete(null)}
             />
 
+
             <Modal
                 open={openCreate}
-                title="Nueva Escuela"
+                title="Nueva escuela"
                 onClose={() => setOpenCreate(false)}
             >
-                <SchoolForm 
+                <SchoolForm
                     loading={saving}
                     onSubmit={async (e) => {
                         e.preventDefault()
-
                         const form = new FormData(e.currentTarget)
                         setSaving(true)
                         const res = await SchoolService.create({
@@ -128,30 +154,34 @@ export default function SchoolPage() {
                 />
             </Modal>
 
+
             <Modal
                 open={!!schoolEdit}
-                title="Editar Escuela"
+                title="Editar escuela"
                 onClose={() => setSchoolEdit(null)}
             >
                 {schoolEdit && (
-                    <SchoolForm 
+                    <SchoolForm
                         defaultValues={schoolEdit}
                         onSubmit={async (e) => {
                             e.preventDefault()
-
                             const form = new FormData(e.currentTarget)
-
-                            const res = await SchoolService.update(String(schoolEdit.id), {
-                                name: String(form.get('name')),
-                                address: {
-                                    provincia: String(form.get('provincia')),
-                                    ciudad: String(form.get('ciudad')),
-                                    calle: String(form.get('calle')),
-                                    postCode: String(form.get('postCode')),
-                                },
-                            })
+                            const res = await SchoolService.update(
+                                String(schoolEdit.id),
+                                {
+                                    name: String(form.get('name')),
+                                    address: {
+                                        provincia: String(form.get('provincia')),
+                                        ciudad: String(form.get('ciudad')),
+                                        calle: String(form.get('calle')),
+                                        postCode: String(form.get('postCode')),
+                                    },
+                                }
+                            )
                             setSchools(prev =>
-                                prev.map(s => s.id === res.id ? res : s)
+                                prev.map(s =>
+                                    s.id === res.id ? res : s
+                                )
                             )
                             setSchoolEdit(null)
                         }}

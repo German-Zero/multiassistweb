@@ -79,10 +79,10 @@ export default function StudentAttendancePage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="min-w-30">Fecha</TableHead>
-                            <TableHead className="min-w-35">Estado</TableHead>
-                            <TableHead className="min-w-30">Justificacion</TableHead>
-                            <TableHead className="min-w-30">Acción</TableHead>
+                            <TableHead className="min-w-[120px]">Fecha</TableHead>
+                            <TableHead className="min-w-[140px]">Estado</TableHead>
+                            <TableHead className="min-w-[120px]">Justificacion</TableHead>
+                            <TableHead className="min-w-[120px]">Acción</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

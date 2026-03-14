@@ -36,22 +36,21 @@ export default function DashboardPreceptor() {
         )
 
     return (
-        <main className="w-full gap-4 flex flex-wrap">
-            <nav className="w-full h-1/12 flex justify-between items-center">
+        <main className="min-h-screen p-6 flex flex-col gap-6">
+            <nav className="flex justify-between items-center">
+                <h1 className="text-xl font-semibold">Divisiones</h1>
                 <LogoutButton />
-                <h1 className="text-xl">Divisiones</h1>
             </nav>
-
-            <div className="w-full h-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DivisionCard 
                     title="Sin asignar"
                     count={unassignedCount}
                     href="/dashboard/preceptor/student/unassigned"
                 />
-                {divisions.map(d => (
+                {divisions?.map(d => (
                     <DivisionCard 
                         key={d.id}
-                        title={`${d.shift} - ${d.academicLevel}${d.letter}`}
+                        title={`${d.academicLevel}${d.letter} - ${d.shift}`}
                         count={d.studentCount}
                         href={`/dashboard/preceptor/student/division/${d.id}`}
                     />

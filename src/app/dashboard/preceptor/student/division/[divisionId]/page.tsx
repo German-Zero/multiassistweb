@@ -36,6 +36,18 @@ export default function DivisionStudents() {
         );
     };
 
+    const toggleAll = () => {
+        const allIds = students
+            .map(s => s.user?.id)
+            .filter((id): id is number => id !== undefined)
+        const allSelected = allIds.every(id => selectedIds.includes(id))
+        if (allSelected) {
+            setSelectedIds([])
+        } else {
+            setSelectedIds(allIds)
+        }
+    }
+
     const openAttendance = async () => {
         await AttendanceService.open({
             date: today,
@@ -60,7 +72,7 @@ export default function DivisionStudents() {
                         Division {divisionId}
                     </h1>
                     <p className="text-sm text-slate-500">
-                        {students.length} Estudiantes
+                        {students?.length ?? 0} Estudiantes
                     </p>
                 </div>
                 <div className="flex items-center justify-end">
@@ -105,9 +117,21 @@ export default function DivisionStudents() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-10"></TableHead>
-                            <TableHead className="min-w-50">Nombre</TableHead>
-                            <TableHead className="min-w-55">Acciones</TableHead>
+                            <TableHead className="w-10">
+                                <input
+                                    type="checkbox"
+                                    className="w-5 h-5 accent-indigo-600"
+                                    onChange={toggleAll}
+                                    checked={
+                                        students.length > 0 &&
+                                        students.every(s =>
+                                            s.user?.id && selectedIds.includes(s.user.id)
+                                        )
+                                    }
+                                />
+                            </TableHead>
+                            <TableHead className="min-w-[200px]">Nombre</TableHead>
+                            <TableHead className="min-w-[220px]">Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -117,7 +141,8 @@ export default function DivisionStudents() {
                                     <input
                                         type="checkbox"
                                         className="w-5 h-5 accent-indigo-600"
-                                        onChange={() => toggle(s.user.id)}
+                                        onChange={() => toggle(s.user?.id)}
+                                        checked={selectedIds.includes(s.user?.id)}
                                     />
                                 </TableCell>
                                 <TableCell className="font-medium">

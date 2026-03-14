@@ -43,67 +43,87 @@ useEffect(() => {
         setDirectorToDelete(null)
     };
 
-    if (loading) return <p>Cargando...</p>
+    if (loading) {
+        return (
+            <section className="min-h-screen flex items-center justify-center">
+                <p className="text-slate-500 dark:text-slate-400 animate-pulse">
+                    Cargando directores...
+                </p>
+            </section>
+        )
+    }
 
     return (
-        <section className="p-6 space-y-6">
-            <header className="flex items-center justify-between">
-                <h1 className="text-2xl text-black font-semibold dark:text-slate-50">Directores</h1>
-                <div className="flex items-center justify-between gap-4">
+        <section className="
+            min-h-screen p-4 sm:p-6 lg:p-10 space-y-6
+            bg-slate-50 dark:bg-slate-950
+        ">
+            <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h1 className="
+                    text-2xl font-semibold
+                    text-slate-800 dark:text-slate-100
+                ">
+                    Directores
+                </h1>
+                <div className="flex gap-3">
                     <Link
-                        href={"/dashboard/admin"}
+                        href="/dashboard/admin"
                         className="
-                        px-4 py-2 rounded-lg transition
-                        text-white
-                        bg-indigo-600 hover:bg-indigo-700"
-                        >
-                        <Undo2 />
+                            flex items-center justify-center px-4 py-2 rounded-lg
+                            text-white bg-slate-600 hover:bg-slate-700
+                            transition
+                        ">
+                            <Undo2 size={18}/>
                     </Link>
                     <button
-                        onClick={() => setOpenCreate(true)} 
+                        onClick={() => setOpenCreate(true)}
                         className="
-                        px-4 py-2 rounded-lg transition
-                        text-white
-                        bg-indigo-600 hover:bg-indigo-700"
-                        >
-                        <Plus />
+                            flex items-center gap-2 px-4 py-2 rounded-lg
+                            text-white bg-indigo-600 hover:bg-indigo-700
+                            transition
+                        ">
+                            <Plus size={18}/>
+                        <span className="hidden sm:inline">
+                            Nuevo
+                        </span>
                     </button>
                 </div>
             </header>
-            
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="
+                grid gap-4
+                grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+            ">
                 {directors.map(d => (
-
                     <DirectorCard
-                    key={d.id}
-                    user={d}
+                        key={d.id}
+                        user={d}
                     >
-                        <button
-                            onClick={() => setDirectorEdit(d)}
-                            className="
-                            py-2 px-4 rounded transition 
-                            font-medium text-white
-                            bg-amber-500 hover:bg-amber-600"
-                            >
-                            Editar
-                        </button>
-                        <button
-                            onClick={() => setDirectorToDelete(String(d.id))}
-                            className="
-                            py-2 px-4 rounded-md transition 
-                            font-medium text-white
-                            bg-red-600 hover:bg-red-700"
-                            >
-                            Eliminar
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setDirectorEdit(d)}
+                                className="
+                                    flex-1 py-2 px-3 rounded-md text-sm font-medium 
+                                    text-white bg-amber-500 hover:bg-amber-600
+                                    transition
+                                ">
+                                    Editar
+                            </button>
+                            <button
+                                onClick={() => setDirectorToDelete(String(d.id))}
+                                className="
+                                    flex-1 py-2 px-3 rounded-md text-sm font-medium
+                                    text-white bg-red-600 hover:bg-red-700
+                                    transition
+                                ">
+                                    Eliminar
+                            </button>
+                        </div>
                     </DirectorCard>
                 ))}
             </div>
-
-
-            <ConfirmDialog 
+            <ConfirmDialog
                 open={!!directorToDelete}
-                title="Eliminar Director"
+                title="Eliminar director"
                 description="El director será eliminado permanentemente."
                 confirmText="Eliminar"
                 cancelText="Cancelar"
@@ -114,7 +134,7 @@ useEffect(() => {
 
             <Modal
                 open={openCreate}
-                title="Nuevo Director"
+                title="Nuevo director"
                 onClose={() => setOpenCreate(false)}
             >
                 <DirectorForm
@@ -122,7 +142,6 @@ useEffect(() => {
                     schools={schools}
                     onSubmit={async (e) => {
                         e.preventDefault()
-
                         const form = new FormData(e.currentTarget)
                         setSaving(true)
                         const res = await UserService.create({
@@ -131,7 +150,7 @@ useEffect(() => {
                             email: String(form.get('email') ?? ''),
                             dni: String(form.get('dni') ?? ''),
                             userType: 'DIRECTOR',
-                            schoolId: Number(form.get('schoolId')),
+                            schoolId: Number(form.get('schoolId'))
                         })
                         setDirectors(prev => [...prev, res])
                         setOpenCreate(false)
@@ -143,34 +162,32 @@ useEffect(() => {
 
             <Modal
                 open={!!directorEdit}
-                title="Editar Director"
+                title="Editar director"
                 onClose={() => setDirectorEdit(null)}
             >
                 {directorEdit && (
-                    <DirectorForm 
+                    <DirectorForm
                         schools={schools}
                         defaultValues={directorEdit}
                         onSubmit={async (e) => {
                             e.preventDefault()
-
                             const form = new FormData(e.currentTarget)
-
                             const res = await UserService.update(directorEdit.id, {
                                 name: String(form.get('name')),
                                 lastname: String(form.get('lastname')),
                                 email: String(form.get('email')),
                                 dni: String(form.get('dni'))
                             })
-
                             setDirectors(prev =>
-                                prev.map(d => d.id === res.id ? res : d)
+                                prev.map(d =>
+                                    d.id === res.id ? res : d
+                                )
                             )
-
                             setDirectorEdit(null)
                         }}
                     />
                 )}
             </Modal>
         </section>
-    );
+    )
 }

@@ -102,8 +102,8 @@ export default function PreceptorPage() {
             
             <ConfirmDialog
                 open={!!preceptorToDelete}
-                title="Eliminar Director"
-                description="El director será eliminado permanentemente."
+                title="Eliminar Preceptor"
+                description="El preceptor será eliminado permanentemente."
                 confirmText="Eliminar"
                 cancelText="Cancelar"
                 onConfirm={confirmDelete}
@@ -126,7 +126,6 @@ export default function PreceptorPage() {
                         setSaving(true)
                         const res = await UserService.create({
                             name: String(form.get('name')),
-                            lastname: String(form.get('lastname')),
                             email: String(form.get('email')),
                             dni: String(form.get('dni')),
                             userType: 'PRECEPTOR',
@@ -142,7 +141,7 @@ export default function PreceptorPage() {
 
             <Modal
                 open={!!preceptorEdit}
-                title="Editar Profesor"
+                title="Editar Preceptor"
                 onClose={() => setPreceptorEdit(null)}
             >
                 {preceptorEdit && (

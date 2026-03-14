@@ -22,8 +22,8 @@ export default function DashboardLayout({
         check()
     }, [])
     return (
-        <div className="min-h-screen flex bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-            <main className="flex-1 min-w-0 p-8">
+        <div className="min-h-dvh flex bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+            <main className="flex-1 min-w-0 p-4 md:p-6 lg:p-8 overflow-y-auto">
                 {children}
             </main>
         </div>

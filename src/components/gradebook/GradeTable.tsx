@@ -56,14 +56,14 @@ export function GradeTable({ gradeBook, onEdit, onCreate }: Props) {
             <TableBody>
                 {gradeBook.map(student => (
                     <TableRow key={student.studentId}>
-                        <TableCell className="p-2 font-medium min-w-55">
+                        <TableCell className="p-2 font-medium min-w-[220px]">
                             {student.studentName}
                         </TableCell>
                         {[1,2,3].map(t => {
                             const trimester = student.trimesters[t as 1 | 2 | 3]
                             return (
                                 <Fragment key={t}>
-                                    <TableCell className="min-w-40">
+                                    <TableCell className="min-w-[160px]">
                                         <div className="flex justify-between">
                                             <div>
                                                 {trimester.grades.map(g => (

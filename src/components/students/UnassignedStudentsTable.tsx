@@ -28,9 +28,9 @@ export function UnassignedStudentsTable({
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-10"></TableHead>
-                    <TableHead className="min-w-45">Nombre</TableHead>
-                    <TableHead className="min-w-55">Email</TableHead>
-                    <TableHead className="min-w-40">Acciones</TableHead>
+                    <TableHead className="min-w-[180px]">Nombre</TableHead>
+                    <TableHead className="min-w-[220px]">Email</TableHead>
+                    <TableHead className="min-w-[160px]">Acciones</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

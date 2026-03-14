@@ -93,10 +93,10 @@ export default function StudentDisciplinaryPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="min-w-30">Fecha</TableHead>
-                            <TableHead className="min-w-55">Motivo</TableHead>
-                            <TableHead className="min-w-30">Severidad</TableHead>
-                            <TableHead className="min-w-30">Acción</TableHead>
+                            <TableHead className="min-w-[120px]">Fecha</TableHead>
+                            <TableHead className="min-w-[220px]">Motivo</TableHead>
+                            <TableHead className="min-w-[120px]">Severidad</TableHead>
+                            <TableHead className="min-w-[120px]">Acción</TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -109,9 +109,9 @@ export default function StudentDisciplinaryPage() {
                                     <span className={`
                                         px-2 py-1 rounded text-xs font-medium
                                         ${
-                                            r.severity >= 7
+                                            r.severity >= 8
                                                 ? "bg-red-100 text-red-700"
-                                                : r.severity <= 6 
+                                                : r.severity >= 4
                                                 ? "bg-yellow-100 text-yellow-700"
                                                 : "bg-blue-100 text-blue-700"
                                         }`}>

@@ -101,8 +101,8 @@ export default function TeachersPage() {
 
             <ConfirmDialog 
                 open={!!teacherToDelete}
-                title="Eliminar Director"
-                description="El director será eliminado permanentemente."
+                title="Eliminar Profesor"
+                description="El Profesor será eliminado permanentemente."
                 confirmText="Eliminar"
                 cancelText="Cancelar"
                 onConfirm={confirmDelete}
